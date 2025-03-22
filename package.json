@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@avnu/avnu-sdk": "^2.1.1",
+    "@demox-labs/aleo-wallet-adapter-base": "^0.0.22",
+    "@demox-labs/aleo-wallet-adapter-react": "^0.0.21",
+    "@demox-labs/aleo-wallet-adapter-reactui": "^0.0.35",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/material": "^5.15.21",
@@ -18,6 +21,7 @@
     "@reclaimprotocol/zk-fetch": "^0.1.5",
     "@starknet-react/chains": "^0.1.0",
     "@starknet-react/core": "^2.8.3",
+    "aleo-adapters": "^1.2.1",
     "axios": "^1.7.7",
     "dotenv": "^16.4.5",
     "firebase": "^10.12.3",

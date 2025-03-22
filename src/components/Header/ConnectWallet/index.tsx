@@ -7,6 +7,9 @@ import { useConnect } from "@starknet-react/core";
 
 import WalletModal from "./WalletModal";
 
+import { WalletMultiButton } from "@demox-labs/aleo-wallet-adapter-reactui";
+import "@demox-labs/aleo-wallet-adapter-reactui/dist/styles.css";
+
 interface Props {}
 
 const ConnectWallet: NextPage<Props> = ({}) => {
@@ -17,10 +20,8 @@ const ConnectWallet: NextPage<Props> = ({}) => {
   };
   return (
     <>
-      <div className='ConnectBtn' onClick={handleOpen}>
-        Connect Wallet
-      </div>
-      <WalletModal open={openWalletModal} handleClose={handleClose} />
+      <WalletMultiButton />
+      {/* <WalletModal open={openWalletModal} handleClose={handleClose} /> */}
     </>
   );
 };
