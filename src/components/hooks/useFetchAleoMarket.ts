@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchData } from "../services/api";
 import { useWallet } from "@demox-labs/aleo-wallet-adapter-react";
+import { stringConverter, formatInput } from "leostringer";
 
 function useFetchAleoMarket() {
   const [loading, setLoading] = useState(false);
@@ -9,7 +10,11 @@ function useFetchAleoMarket() {
   const createMarket = async () => {
     if (requestTransaction) {
       try {
-        console.log("calling requestTransaction");
+        console.log("Test");
+        const string = "Test Test";
+        const convertedInput = stringConverter(string);
+        const formattedNew = formatInput(convertedInput);
+        console.log(formattedNew, "string converted");
         const result = await requestTransaction({
           address: publicKey || "",
           chainId: "testnetbeta",
@@ -20,23 +25,37 @@ function useFetchAleoMarket() {
               inputs: [
                 {
                   market_id: "1u64",
-                  name: "Testfield",
-                  description: "TestDescriptionfield",
-                  category: "cryptofield",
-                  image: "https://placehold.co/600x400/000000/FFFFFF/pngfield",
+                  name: `${stringConverter("Test")[0]}field`,
+                  description: `${stringConverter("TestDescription")[0]}field`,
+                  category: `${stringConverter("TestDescription")[0]}field`,
+                  image: `${
+                    stringConverter(
+                      "https://placehold.co/600x400/000000/FFFFFF/png"
+                    )[0]
+                  }field`,
                   outcome_1: {
-                    name: "yesfield",
-                    description: "TestDescriptionfield",
-                    category: "cryptofield",
-                    image:
-                      "https://placehold.co/600x400/000000/FFFFFF/pngfield",
+                    name: `${stringConverter("yes")[0]}field`,
+                    description: `${
+                      stringConverter("TestDescription")[0]
+                    }field`,
+                    category: `${stringConverter("TestDescription")[0]}field`,
+                    image: `${
+                      stringConverter(
+                        "https://placehold.co/600x400/000000/FFFFFF/png"
+                      )[0]
+                    }field`,
                   },
                   outcome_2: {
-                    name: "yesfield",
-                    description: "TestDescriptionfield",
-                    category: "cryptofield",
-                    image:
-                      "https://placehold.co/600x400/000000/FFFFFF/pngfield",
+                    name: `${stringConverter("no")[0]}field`,
+                    description: `${
+                      stringConverter("TestDescription")[0]
+                    }field`,
+                    category: `${stringConverter("TestDescription")[0]}field`,
+                    image: `${
+                      stringConverter(
+                        "https://placehold.co/600x400/000000/FFFFFF/png"
+                      )[0]
+                    }field`,
                   },
                   outcome_1_shares: "0u64",
                   outcome_2_shares: "0u64",
