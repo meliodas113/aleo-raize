@@ -85,42 +85,44 @@ function useFetchAleoMarket() {
               program: "raize_aleo.aleo",
               functionName: "create_market",
               inputs: [
-                {
-                  market_id: "1u64",
-                  name: `${convertData(formatInput(stringConverter("Test")))}field`,
-                  description: `${convertData(formatInput(stringConverter("TestDescription")))}field`,
-                  category: `${convertData(formatInput(stringConverter("TestDescription")))}field`,
-                  image: `${convertData(formatInput(stringConverter(
-                    "https://placehold.co/600x400/000000/FFFFFF/png"
-                  ))
-        )}field`,
-                  outcome_1: {
-                    name: `${convertData(formatInput(stringConverter("yes")))}field`,
-                    description: `${convertData(formatInput(stringConverter("TestDescription")))
-                      }field`,
-                    category: `${convertData(formatInput(stringConverter("TestDescription")))}field`,
-                    image: `${convertData(formatInput(stringConverter(
-                      "https://placehold.co/600x400/000000/FFFFFF/png"
-                    )))
-                      }field`,
-                  },
-                  outcome_2: {
-                    name: `${convertData(formatInput(stringConverter("no")))}field`,
-                    description: `${convertData(formatInput(stringConverter("TestDescription")
-        ))}field`,
-                    category: `${convertData(formatInput(stringConverter("TestDescription")))}field`,
-                    image: `${convertData(formatInput(stringConverter(
-                      "https://placehold.co/600x400/000000/FFFFFF/png"
-                    )
-        ))}field`,
-                  },
-                  outcome_1_shares: "0u64",
-                  outcome_2_shares: "0u64",
-                  outcome_1_pool: "0u64",
-                  outcome_2_pool: "0u64",
-                  is_Settled: "false",
-                  winning_outcome: "0u8",
-                },
+        //         {
+        //           market_id: "1u64",
+        //           name: `${convertData(formatInput(stringConverter("Test")))}field`,
+        //           description: `${convertData(formatInput(stringConverter("TestDescription")))}field`,
+        //           category: `${convertData(formatInput(stringConverter("TestDescription")))}field`,
+        //           image: `${convertData(formatInput(stringConverter(
+        //             "https://placehold.co/600x400/000000/FFFFFF/png"
+        //           ))
+        // )}field`,
+        //           outcome_1: {
+        //             name: `${convertData(formatInput(stringConverter("yes")))}field`,
+        //             description: `${convertData(formatInput(stringConverter("TestDescription")))
+        //               }field`,
+        //             category: `${convertData(formatInput(stringConverter("TestDescription")))}field`,
+        //             image: `${convertData(formatInput(stringConverter(
+        //               "https://placehold.co/600x400/000000/FFFFFF/png"
+        //             )))
+        //               }field`,
+        //           },
+        //           outcome_2: {
+        //             name: `${convertData(formatInput(stringConverter("no")))}field`,
+        //             description: `${convertData(formatInput(stringConverter("TestDescription")
+        // ))}field`,
+        //             category: `${convertData(formatInput(stringConverter("TestDescription")))}field`,
+        //             image: `${convertData(formatInput(stringConverter(
+        //               "https://placehold.co/600x400/000000/FFFFFF/png"
+        //             )
+        // ))}field`,
+        //           },
+        //           outcome_1_shares: "0u64",
+        //           outcome_2_shares: "0u64",
+        //           outcome_1_pool: "0u64",
+        //           outcome_2_pool: "0u64",
+        //           is_Settled: "false",
+        //           winning_outcome: "0u8",
+        //         },
+        "{market_id: 5u64,name: 1953719636field,description: 573412356898059161959434995262252372field,category: 573412356898059161959434995262252372field,image: 144135085899468267716631502586916402280field,outcome_1: {name: 7562617field,description: 573412356898059161959434995262252372field,image: 144135085899468267716631502586916402280field, category: 573412356898059161959434995262252372field},outcome_2: {name: 28526field,description: 573412356898059161959434995262252372field,image: 144135085899468267716631502586916402280field, category: 573412356898059161959434995262252372field},outcome1_pool: 0u64,outcome2_pool: 0u64,is_settled: false,winning_outcome: 0u8}"
+
               ],
             },
           ],
