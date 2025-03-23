@@ -20,7 +20,7 @@ function useFetchAleoMarket() {
           chainId: "testnetbeta",
           transitions: [
             {
-              program: "raize_market_maker.aleo",
+              program: "raize_aleo.aleo",
               functionName: "create_market",
               inputs: [
                 {
