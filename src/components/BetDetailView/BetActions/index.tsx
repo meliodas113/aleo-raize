@@ -7,6 +7,7 @@ import { Box } from "@mui/material";
 import "./styles.scss";
 import CustomLogo from "@/components/common/CustomIcons";
 import {
+  ALEO_LOGO,
   ETH_LOGO,
   LORDS_LOGO,
   STARKNET_LOGO,
@@ -21,11 +22,13 @@ import {
   STARK_ADDRESS,
   USDC_ADDRESS,
 } from "@/components/helpers/constants";
-import { getProbabilites, getString } from "@/components/helpers/functions";
+import { getProbabilites } from "@/components/helpers/functions";
 import { usePathname } from "next/navigation";
 import usePlaceBet from "@/components/hooks/usePlaceBet";
 import useSwapTrade from "@/components/hooks/useSwapTrade";
 import { enqueueSnackbar } from "notistack";
+import { useWallet } from "@demox-labs/aleo-wallet-adapter-react";
+import useSendPlaceBet from "@/components/hooks/useSendPlaceBet";
 
 interface Props {
   outcomes: Outcome[];
@@ -34,9 +37,8 @@ interface Props {
 }
 
 const BetActions: NextPage<Props> = ({ outcomes, moneyInPool, category }) => {
-  const { address } = useAccount();
   const pathname = usePathname();
-  const { connectors, connect } = useConnect();
+  const { publicKey } = useWallet();
   const { choice, setChoice } = useContext(MarketContext);
   const [betAmount, setBetAmount] = useState("");
   const [marketId, setMarketId] = useState(0);
@@ -44,13 +46,6 @@ const BetActions: NextPage<Props> = ({ outcomes, moneyInPool, category }) => {
   const [percent1, setPercent1] = useState(0);
   const [percent2, setPercent2] = useState(0);
   const [currentToken, setCurrentToken] = useState<string>(USDC_ADDRESS);
-
-  const logoOptions = [
-    { value: ETH_ADDRESS, label: "ETH", src: ETH_LOGO },
-    { value: STARK_ADDRESS, label: "STRK", src: STARKNET_LOGO },
-    { value: USDC_ADDRESS, label: "USDC", src: USDC_LOGO },
-    { value: LORDS_ADDRESS, label: "LORDS", src: LORDS_LOGO },
-  ];
 
   useEffect(() => {
     if (!outcomes) return;
@@ -64,20 +59,15 @@ const BetActions: NextPage<Props> = ({ outcomes, moneyInPool, category }) => {
 
   useEffect(() => {
     const encoded = pathname.split("/")[3];
-    const hexPart = encoded.slice(0, -4);
-    const marketId = parseInt(hexPart, 16);
+    const marketId = parseInt(encoded);
     setMarketId(marketId);
   }, [pathname]);
 
-  const { quote } = useSwapTrade(currentToken, betAmount);
-
-  const { balance, writeAsync } = usePlaceBet(
-    marketId,
-    betAmount,
-    choice,
-    currentToken,
-    quote?.buyAmount
-  );
+  const { placeBet } = useSendPlaceBet({
+    market_id: marketId.toString(),
+    outcome_id: choice.toString(),
+    amount: betAmount,
+  });
 
   function handleBetAmount(value: string) {
     if (value == "") {
@@ -89,48 +79,24 @@ const BetActions: NextPage<Props> = ({ outcomes, moneyInPool, category }) => {
   }
 
   useEffect(() => {
-    if (currentToken == USDC_ADDRESS) {
-      if (moneyInPool && betAmount != "") {
-        if (choice == 0) {
-          setPotentialWinnings(
-            (parseFloat(betAmount) *
-              (parseFloat(betAmount) +
-                parseFloat(BigInt(moneyInPool).toString()) / 1e6)) /
-              (parseFloat(betAmount) +
-                parseFloat(outcomes[0].bought_shares.toString()) / 1e6)
-          );
-        } else {
-          setPotentialWinnings(
-            (parseFloat(betAmount) *
-              (parseFloat(betAmount) +
-                parseFloat(BigInt(moneyInPool).toString()) / 1e6)) /
-              (parseFloat(betAmount) +
-                parseFloat(outcomes[1].bought_shares.toString()) / 1e6)
-          );
-        }
-      }
+    if (choice == 0) {
+      setPotentialWinnings(
+        (parseFloat(betAmount) *
+          (parseFloat(betAmount) +
+            parseFloat(BigInt(moneyInPool).toString()) / 1e6)) /
+          (parseFloat(betAmount) +
+            parseFloat(outcomes[0].bought_shares.toString()) / 1e6)
+      );
     } else {
-      if (moneyInPool && betAmount != "" && quote) {
-        if (choice == 0) {
-          setPotentialWinnings(
-            (quote?.buyAmountInUsd *
-              (quote?.buyAmountInUsd +
-                parseFloat(BigInt(moneyInPool).toString()) / 1e6)) /
-              (quote?.buyAmountInUsd +
-                parseFloat(outcomes[0].bought_shares.toString()) / 1e6)
-          );
-        } else {
-          setPotentialWinnings(
-            (quote?.buyAmountInUsd *
-              (quote?.buyAmountInUsd +
-                parseFloat(BigInt(moneyInPool).toString()) / 1e6)) /
-              (quote?.buyAmountInUsd +
-                parseFloat(outcomes[1].bought_shares.toString()) / 1e6)
-          );
-        }
-      }
+      setPotentialWinnings(
+        (parseFloat(betAmount) *
+          (parseFloat(betAmount) +
+            parseFloat(BigInt(moneyInPool).toString()) / 1e6)) /
+          (parseFloat(betAmount) +
+            parseFloat(outcomes[1].bought_shares.toString()) / 1e6)
+      );
     }
-  }, [choice, betAmount, quote, moneyInPool, currentToken]);
+  }, [choice, betAmount, moneyInPool, currentToken]);
 
   const handleToast = (
     message: string,
@@ -152,112 +118,86 @@ const BetActions: NextPage<Props> = ({ outcomes, moneyInPool, category }) => {
   };
 
   return (
-    <Box className='BetActions'>
-      <span className='BetActions-Label'>Your Prediction</span>
-      <Box className='BetOptionsContainer'>
-        <span className='BetOptionsLabel'>Choose your option</span>
-        <Box
-          onClick={() => {
-            setChoice(0);
-          }}
-          className={choice === 0 ? "BetOptionActive" : "BetOption"}
-        >
-          <span className='Green'>
-            {outcomes ? getString(outcomes[0].name) : "Yes"}
-          </span>
-          <Box className='RadioButtonContainer'>
-            <span className='RadioLabel'>{percent1.toFixed(2)}%</span>
-            <Box className='RadioButton'>
-              <Box className='RadioButtonInner'></Box>
-            </Box>
-          </Box>
-        </Box>
+    <Box className="BetActions">
+      <span className="BetActions-Label">Your Prediction</span>
+      <Box className="BetOptionsContainer">
+        <span className="BetOptionsLabel">Choose your option</span>
         <Box
           onClick={() => {
             setChoice(1);
           }}
           className={choice === 1 ? "BetOptionActive" : "BetOption"}
         >
-          <span className='Red'>
-            {outcomes ? getString(outcomes[1].name) : "No"}
-          </span>
-          <Box className='RadioButtonContainer'>
-            <span className='RadioLabel'>{percent2.toFixed(2)}%</span>
-            <Box className='RadioButton'>
-              <Box className='RadioButtonInner'></Box>
+          <span className="Green">{outcomes ? outcomes[0].name : "Yes"}</span>
+          <Box className="RadioButtonContainer">
+            <span className="RadioLabel">{percent1.toFixed(2)}%</span>
+            <Box className="RadioButton">
+              <Box className="RadioButtonInner"></Box>
+            </Box>
+          </Box>
+        </Box>
+        <Box
+          onClick={() => {
+            setChoice(2);
+          }}
+          className={choice === 2 ? "BetOptionActive" : "BetOption"}
+        >
+          <span className="Red">{outcomes ? outcomes[1].name : "No"}</span>
+          <Box className="RadioButtonContainer">
+            <span className="RadioLabel">{percent2.toFixed(2)}%</span>
+            <Box className="RadioButton">
+              <Box className="RadioButtonInner"></Box>
             </Box>
           </Box>
         </Box>
       </Box>
-      <Box className='InputContainer'>
-        <span className='Label'>Order Value</span>
-        <Box className='InputWrapper'>
-          <Box className='Input-Left'>
-            <Box className='Starknet-logo'>
-              <Select
-                value={currentToken}
-                onChange={(e) => setCurrentToken(e.target.value)}
-                className='LogoSelect'
-              >
-                {logoOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    <CustomLogo width='20px' height='20px' src={option.src} />
-                  </MenuItem>
-                ))}
-              </Select>
+      <Box className="InputContainer">
+        <span className="Label">Order Value</span>
+        <Box className="InputWrapper">
+          <Box className="Input-Left">
+            <Box className="Starknet-logo">
+              <CustomLogo width="20px" height="20px" src={ALEO_LOGO} />
             </Box>
             <input
-              className='InputField'
-              type='number'
-              id='numberInput'
-              name='numberInput'
+              className="InputField"
+              type="number"
+              id="numberInput"
+              name="numberInput"
               value={betAmount}
               onChange={(e) => handleBetAmount(e.target.value)}
-              placeholder='0.00'
+              placeholder="0.00"
               required
             />
           </Box>
-          <span className='BalanceField'>
-            $
-            {betAmount
-              ? currentToken !== USDC_ADDRESS && quote
-                ? quote?.buyAmountInUsd
-                : betAmount
-              : "0"}{" "}
-          </span>
+          <span className="BalanceField">${betAmount ? betAmount : "0"} </span>
         </Box>
-        <span className='BalanceField'>
-          {address
+        <span className="BalanceField">
+          {/* {publicKey
             ? "Balance: " + parseFloat(balance).toFixed(6)
-            : "Please connect your wallet."}{" "}
+            : "Please connect your wallet."}{" "} */}
         </span>
       </Box>
-      <Box className='ReturnStats'>
-        <span className='ReturnLabel'>Potential Winning</span>
-        <Box className='ReturnValue'>
+      <Box className="ReturnStats">
+        <span className="ReturnLabel">Potential Winning</span>
+        <Box className="ReturnValue">
           <span className={betAmount == "" ? "Gray" : "Green"}>
             {potentialWinnings ? potentialWinnings.toFixed(5) : 0}
           </span>
-          <Box className='Starknet-logo'>
-            <CustomLogo src={USDC_LOGO} />
+          <Box className="Starknet-logo">
+            <CustomLogo src={ALEO_LOGO} />
           </Box>
         </Box>
       </Box>
-      {address ? (
-        <Box onClick={() => writeAsync()} className={`ActionBtn`}>
+      {publicKey ? (
+        <Box className={`ActionBtn`} onClick={placeBet}>
           {betAmount == ""
             ? "Enter Amount"
-            : parseFloat(balance) > parseFloat(betAmount)
+            : parseFloat("5") > parseFloat(betAmount)
             ? "Place Order"
             : "Insufficient Balance"}
         </Box>
       ) : (
-        <Box
-          onClick={() => connect({ connector: connectors[0] })}
-          className='ActionBtn'
-        >
-          Connect Wallet
-        </Box>
+        <Box className="ActionBtn">Connect Wallet</Box>
       )}
     </Box>
   );

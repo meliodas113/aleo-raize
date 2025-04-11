@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import "./styles.scss";
 import CustomLogo from "@/components/common/CustomIcons";
-import { CLOCK_ICON, USDC_LOGO } from "@/components/helpers/icons";
+import { ALEO_LOGO, CLOCK_ICON, USDC_LOGO } from "@/components/helpers/icons";
 import { MarketContext } from "@/app/context/MarketProvider";
 import { Outcome } from "@/components/helpers/types";
 import {
@@ -62,6 +62,7 @@ const BetCard: NextPage<Props> = ({
   }, [duration]);
 
   useEffect(() => {
+    console.log(outcomes, marketId);
     const percentages = getProbabilites(
       outcomes[0].bought_shares.toString(),
       outcomes[1].bought_shares.toString()
@@ -80,10 +81,7 @@ const BetCard: NextPage<Props> = ({
 
   const handleOpen = (outcome: number) => {
     setChoice(outcome);
-    const encodedId = stringToHex(marketId);
-    router.push(
-      `/bet-details/${getString(category).replace(" ", "-")}/${encodedId}`
-    );
+    router.push(`/bet-details/${category.replace(" ", "-")}/${marketId}`);
   };
 
   const checkDeadline = (): boolean => {
@@ -116,7 +114,7 @@ const BetCard: NextPage<Props> = ({
           <div className="CategoryLogo">
             <Image src={logo} alt="Logo" width={30} height={30} />
           </div>
-          <div className="CategoryName">{getString(category)}</div>
+          <div className="CategoryName">{category}</div>
         </div>
         <div className="Bet-Duration">
           <div className="DurationIcon">
@@ -136,7 +134,7 @@ const BetCard: NextPage<Props> = ({
           }}
           className="BetCard-Option"
         >
-          <span className="Green-Text">{getString(outcomes[0].name)}</span>
+          <span className="Green-Text">{outcomes[0].name}</span>
           <span className="Bet-Stat">{percent1.toFixed(2)}%</span>
         </div>
         <div
@@ -145,19 +143,19 @@ const BetCard: NextPage<Props> = ({
           }}
           className="BetCard-Option"
         >
-          <span className="Red-Text">{getString(outcomes[1].name)}</span>
+          <span className="Red-Text">{outcomes[1].name}</span>
           <span className="Bet-Stat">{percent2.toFixed(2)}%</span>
         </div>
       </div>
       <div className="Pool-Stats">
         Prize Pool
         <span className="Pool-Value">
-          {(parseFloat(BigInt(moneyInPool).toString()) / 10 ** 6)
+          {(parseFloat(BigInt(moneyInPool).toString()) / 10 ** 5)
             .toString()
             .slice(0, 7)}
         </span>
         <div className="Starknet-logo">
-          <CustomLogo src={USDC_LOGO} />
+          <CustomLogo src={ALEO_LOGO} />
         </div>
       </div>
     </div>

@@ -2,7 +2,12 @@ import { NextPage } from "next";
 import "./styles.scss";
 import { Box, Skeleton } from "@mui/material";
 import CustomLogo from "@/components/common/CustomIcons";
-import { CLOCK_ICON, ETH_LOGO, USDC_LOGO } from "@/components/helpers/icons";
+import {
+  ALEO_LOGO,
+  CLOCK_ICON,
+  ETH_LOGO,
+  USDC_LOGO,
+} from "@/components/helpers/icons";
 import { useEffect, useState } from "react";
 import { getNumber, getTimeBetween } from "@/components/helpers/functions";
 import Image from "next/image";
@@ -38,38 +43,22 @@ const BetDetails: NextPage<Props> = ({
   }, [duration]);
 
   return (
-    <Box className='BetModal-DetailsContainer'>
-      <Box className='HeadingContainer'>
-        <Box className='BetName'>
-          <Box className='BetDetails-Logo'>
-            <Image src={logo} alt='CategoryLogo' width={30} height={30} />
+    <Box className="BetModal-DetailsContainer">
+      <Box className="HeadingContainer">
+        <Box className="BetName">
+          <Box className="BetDetails-Logo">
+            <Image src={logo} alt="CategoryLogo" width={30} height={30} />
           </Box>
-          <span>
+          {/* <span>
             {category ? (
               category
             ) : (
-              <Skeleton variant='rectangular' width={100} height={20} />
+              <Skeleton variant="rectangular" width={100} height={20} />
             )}
-          </span>
-          <Box className='BetDetails'>
-        <span className='Heading'>
-          {heading ? (
-            heading
-          ) : (
-            <Skeleton variant='rectangular' width={100} height={20} />
-          )}
-        </span>
-        <span className='Sub-Heading'>
-          {subHeading ? (
-            subHeading
-          ) : (
-            <Skeleton variant='rectangular' width={100} height={20} />
-          )}
-        </span>
-      </Box>
+          </span> */}
         </Box>
-        <Box className='BetDuration'>
-          <Box className='BetDetails-Logo'>
+        <Box className="BetDuration">
+          <Box className="BetDetails-Logo">
             <CustomLogo src={CLOCK_ICON} />
           </Box>
           <span>
@@ -77,11 +66,27 @@ const BetDetails: NextPage<Props> = ({
           </span>
         </Box>
       </Box>
-      <Box className='BetPool'>
+      <Box className="BetDetails">
+        <span className="Heading">
+          {heading ? (
+            heading
+          ) : (
+            <Skeleton variant="rectangular" width={100} height={20} />
+          )}
+        </span>
+        <span className="Sub-Heading">
+          {subHeading ? (
+            subHeading
+          ) : (
+            <Skeleton variant="rectangular" width={100} height={20} />
+          )}
+        </span>
+      </Box>
+      <Box className="BetPool">
         Prize-Pool{" "}
-        <span className='Colored'>{getNumber(moneyInPool).slice(0, 7)}</span>{" "}
-        <Box className='Starknet-logo'>
-          <CustomLogo src={USDC_LOGO} />
+        <span className="Colored">{getNumber(moneyInPool).slice(0, 7)}</span>{" "}
+        <Box className="Starknet-logo">
+          <CustomLogo src={ALEO_LOGO} />
         </Box>
       </Box>
     </Box>

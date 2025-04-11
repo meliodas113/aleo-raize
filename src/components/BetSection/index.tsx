@@ -52,7 +52,7 @@ const BetSection: NextPage<Props> = ({}) => {
     }
   };
 
-  const { loading: aleoLoading } = useFetchAleoMarket();
+  const { loading: aleoLoading, data, placeBet } = useFetchAleoMarket();
 
   useEffect(() => {
     setActiveTab(0);
@@ -110,7 +110,7 @@ const BetSection: NextPage<Props> = ({}) => {
         </div>
         {/* Selection Tab */}
         <div className="BetCard-Wrapper">
-          {loading ? (
+          {aleoLoading ? (
             <div className="LoaderDiv">
               <CustomLoader size={"55"} color="#9C9C9C" />
             </div>
@@ -144,12 +144,12 @@ const BetSection: NextPage<Props> = ({}) => {
               </motion.span>
             )
           ) : activeTab === 2 &&
-            markets.filter((market) => {
+            data.filter((market) => {
               const deadline = new Date(parseFloat(market.deadline)).getTime();
               const oneDayFromNow = new Date().getTime();
               return deadline - oneDayFromNow < 86400000 * 7;
             }).length > 0 ? (
-            markets
+            data
               .filter((market) => {
                 const deadline = new Date(
                   parseFloat(market.deadline)
@@ -173,8 +173,8 @@ const BetSection: NextPage<Props> = ({}) => {
                   />
                 </div>
               ))
-          ) : activeTab === 0 && markets.length > 0 ? (
-            markets
+          ) : activeTab === 0 && data.length > 0 ? (
+            data
               .sort(
                 (a, b) =>
                   parseFloat(getNumber(b.money_in_pool)) -
@@ -211,11 +211,11 @@ const BetSection: NextPage<Props> = ({}) => {
                   )}
                 </div>
               ))
-          ) : markets.length > 0 &&
-            markets.filter((market) =>
+          ) : data.length > 0 &&
+            data.filter((market) =>
               tabList[activeTab].tabName.includes(getString(market.category))
             ).length > 0 ? (
-            markets
+            data
               .filter((market) =>
                 tabList[activeTab].tabName.includes(getString(market.category))
               )

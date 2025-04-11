@@ -13,6 +13,22 @@ export interface Market {
   image: string;
   market_id: number;
 }
+export interface OpenMarket {
+  name: string;
+  deadline: string;
+  betAmount: number;
+  betOutcome: string;
+}
+
+export interface ClosedMarket {
+  name: string;
+  deadline: string;
+  betAmount: number;
+  betOutcome: string;
+  winning_outcome: string;
+  isClaimed: boolean;
+  Bet: any;
+}
 
 export interface FPMMMarket {
   deadline: string;

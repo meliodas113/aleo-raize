@@ -1,8 +1,8 @@
 import React from "react";
 import "./styles.scss";
-import { Market, UserBet } from "@/components/helpers/types";
+import { Market, OpenMarket, UserBet } from "@/components/helpers/types";
 import { getNumber, getString } from "@/components/helpers/functions";
-import { USDC_LOGO } from "@/components/helpers/icons";
+import { ALEO_LOGO, USDC_LOGO } from "@/components/helpers/icons";
 import { Box } from "@mui/material";
 import { motion } from "framer-motion";
 import CustomLogo from "@/components/common/CustomIcons";
@@ -12,12 +12,11 @@ import DetailsButton from "./DetailsButton";
 import { options } from "@/components/helpers/constants";
 
 interface Props {
-  openMarkets: Market[];
-  openBets: UserBet[];
+  openMarkets: OpenMarket[];
   loading: boolean;
 }
 
-function OpenPositions({ openMarkets, openBets, loading }: Props) {
+function OpenPositions({ openMarkets, loading }: Props) {
   return (
     <div className="OpenPositions">
       <div className="Heading">Open Positions</div>
@@ -52,16 +51,12 @@ function OpenPositions({ openMarkets, openBets, loading }: Props) {
                 </span>
                 <span className="BetToken StakedAmount">
                   <Box className="TokenLogo">
-                    <CustomLogo src={USDC_LOGO} />
+                    <CustomLogo src={ALEO_LOGO} />
                   </Box>
-                  {openBets.length > 0 && openBets[index]
-                    ? getNumber(openBets[index].position.amount)
-                    : "0"}
+                  {market.betAmount}
                 </span>
                 <span className="Yes Prediction">
-                  {openBets.length > 0 && openBets[index]
-                    ? getString(openBets[index].outcome.name)
-                    : "0"}
+                  {market.betOutcome === "1" ? "Yes" : "No"}
                 </span>
                 <DetailsButton
                   name={market.name}
@@ -69,16 +64,8 @@ function OpenPositions({ openMarkets, openBets, loading }: Props) {
                     "en-US",
                     options
                   )}
-                  amount={
-                    openBets.length > 0 && openBets[index]
-                      ? getNumber(openBets[index].position.amount)
-                      : "0"
-                  }
-                  prediction={
-                    openBets.length > 0 && openBets[index]
-                      ? getString(openBets[index].outcome.name)
-                      : "0"
-                  }
+                  amount={market.betAmount.toString()}
+                  prediction={market.betOutcome === "1" ? "Yes" : "No"}
                 />
               </div>
             ))}

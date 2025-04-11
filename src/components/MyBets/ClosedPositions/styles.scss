@@ -7,8 +7,7 @@
   justify-content: flex-start;
   margin-inline: auto;
 
-  @include md {
-  }
+  @include md {}
 
   @include lg {
     width: 80%;
@@ -19,15 +18,13 @@
     max-width: 1200px;
   }
 
-  @include xxl {
-  }
+  @include xxl {}
 
   .Heading {
     font-size: 22px;
     text-align: start;
 
-    @include md {
-    }
+    @include md {}
 
     @include lg {
       font-size: 25px;
@@ -84,8 +81,7 @@
       color: #818181;
       margin-bottom: 20px;
 
-      @include md {
-      }
+      @include md {}
 
       @include lg {
         font-size: 13px;
@@ -99,6 +95,7 @@
       .Status {
         width: 30%;
         text-align: left;
+        cursor: pointer;
 
         @include md {
           width: 20%;
@@ -214,8 +211,7 @@
       color: #fff;
       margin-top: 20px;
 
-      @include md {
-      }
+      @include md {}
 
       @include lg {
         font-size: 16px;
@@ -256,8 +252,7 @@
           width: 20%;
         }
 
-        @include xxl {
-        }
+        @include xxl {}
 
         .Claim {
           background-color: #d5741c;
@@ -275,21 +270,19 @@
             color: #d5741c;
           }
 
-          @include md {
-          }
+          @include md {}
 
-          @include lg {
-          }
+          @include lg {}
 
-          @include xl {
-          }
+          @include xl {}
 
-          @include xxl {
-          }
+          @include xxl {}
         }
+
         .Won {
           color: #3dd179;
         }
+
         .Lost {
           color: #dd7168;
         }
@@ -314,8 +307,7 @@
           width: 30%;
         }
 
-        @include xxl {
-        }
+        @include xxl {}
       }
 
       .DatePlaced {
@@ -338,8 +330,7 @@
           width: 30%;
         }
 
-        @include xxl {
-        }
+        @include xxl {}
       }
 
       .StakedAmount {
@@ -354,11 +345,9 @@
           height: 16px;
           margin-bottom: 3px;
 
-          @include md {
-          }
+          @include md {}
 
-          @include lg {
-          }
+          @include lg {}
 
           @include xl {
             width: 18px;
@@ -387,8 +376,7 @@
           width: 20%;
         }
 
-        @include xxl {
-        }
+        @include xxl {}
       }
 
       .Prediction {
@@ -408,8 +396,7 @@
           width: 20%;
         }
 
-        @include xxl {
-        }
+        @include xxl {}
       }
     }
   }
