@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { useWallet } from "@demox-labs/aleo-wallet-adapter-react";
 import { fetchData } from "../services/api";
-import { bigIntToString, stringToBigInt } from "leostringer";
+
+interface Bet {
+  data: string;
+}
 
 function useClaimWinnings() {
   const [loading, setLoading] = useState(false);
@@ -9,23 +12,16 @@ function useClaimWinnings() {
   const { requestTransaction, requestTransactionHistory, publicKey } =
     useWallet();
 
-  const ClaimWinnings = async (bet: any) => {
+  const claimWinnings = async (bet: Bet) => {
+    if (!publicKey || !requestTransaction) {
+      console.warn("Wallet not connected or requestTransaction unavailable.");
+      return;
+    }
+
     setLoading(true);
-    console.log(
-      JSON.stringify(bet.data),
-      bet,
-      typeof JSON.stringify(bet.data),
-      bigIntToString(
-        BigInt(
-          1224480463811635783132078430968584093512141773606571953954052417473122091549
-        )
-      ),
-      stringToBigInt(JSON.stringify(bet.data)),
-      "bet"
-    );
     try {
-      const result = await requestTransaction?.({
-        address: publicKey || "",
+      const result = await requestTransaction({
+        address: publicKey,
         chainId: "testnetbeta",
         transitions: [
           {
@@ -34,55 +30,73 @@ function useClaimWinnings() {
             inputs: [bet],
           },
         ],
-        fee: 300000, // fees in microcredits
+        fee: 300_000, // microcredits
         feePrivate: false,
       });
+
       setUserWinnings(true);
-      console.log(result);
+      console.log("Winnings claimed:", result);
+
       const transactions = await requestTransactionHistory?.(
         "raize_market_new_aleo.aleo"
       );
-      console.log("Transactions: " + transactions);
+      console.log("Transaction history:", transactions);
     } catch (error) {
-      console.log(error, "ClaimWinnings");
+      console.error("Error during claimWinnings:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const ClaimTransfer = async () => {
+  const claimTransfer = async () => {
+    if (!publicKey || !requestTransaction) {
+      console.warn("Wallet not connected or requestTransaction unavailable.");
+      return;
+    }
+
+    setLoading(true);
     try {
-      const amount = await fetchData(
-        "user_winnings",
-        publicKey?.toString() as string
-      );
-      console.log(amount, amount.match(/\s*(\d+)u64/)[1]);
-      const result = await requestTransaction?.({
-        address: publicKey || "",
+      const rawAmount = await fetchData("user_winnings", publicKey);
+      const amountMatch = rawAmount?.match(/\s*(\d+)u64/);
+      const parsedAmount = amountMatch?.[1];
+
+      if (!parsedAmount) {
+        throw new Error("Unable to parse user winnings amount.");
+      }
+
+      const result = await requestTransaction({
+        address: publicKey,
         chainId: "testnetbeta",
         transitions: [
           {
             program: "raize_market_new_aleo.aleo",
             functionName: "claim_winnings",
-            inputs: [`${amount.match(/\s*(\d+)u64/)[1]}u64`],
+            inputs: [`${parsedAmount}u64`],
           },
         ],
-        fee: 300000, // fees in microcredits
+        fee: 300_000,
         feePrivate: false,
       });
-      console.log(result);
+
+      console.log("Transfer claimed:", result);
+
       const transactions = await requestTransactionHistory?.(
         "raize_market_new_aleo.aleo"
       );
-      console.log("Transactions: " + transactions);
+      console.log("Transaction history:", transactions);
     } catch (error) {
-      console.log(error);
+      console.error("Error during claimTransfer:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  return { loading, ClaimWinnings, userWinnings, ClaimTransfer };
+  return {
+    loading,
+    userWinnings,
+    claimWinnings,
+    claimTransfer,
+  };
 }
 
 export default useClaimWinnings;
